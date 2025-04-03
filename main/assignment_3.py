@@ -1,8 +1,8 @@
 import numpy as np
 
-# ==========================
-# Question 1: Gaussian Elimination
-# ==========================
+
+# Q1: Gaussian Elimination
+
 def gaussian_elimination():
     A = np.array([
         [2.0, -1.0, 1.0, 6.0],
@@ -28,9 +28,9 @@ def gaussian_elimination():
 
     print(f"[ {int(x[0])} {int(x[1])} {int(x[2])} ]")
 
-# ==========================
-# Question 2: LU Factorization
-# ==========================
+
+# Q2: LU Factorization
+
 def lu_factorization():
     A = np.array([
         [1.0, 1.0, 0.0, 3.0],
@@ -55,9 +55,9 @@ def lu_factorization():
     print(L.tolist())
     print(U.tolist())
 
-# ==========================
-# Question 3: Diagonal Dominance
-# ==========================
+
+# Q3: Diagonal Dominance
+
 def is_diagonally_dominant():
     A = np.array([
         [9, 0, 5, 2, 1],
@@ -81,9 +81,9 @@ def is_diagonally_dominant():
     else:
         print(0.0)
 
-# ==========================
-# Question 4: Positive Definiteness
-# ==========================
+
+# Q4: Positive Definiteness
+
 def is_positive_definite():
     A = np.array([
         [2, 2, 1],
@@ -97,9 +97,9 @@ def is_positive_definite():
     except np.linalg.LinAlgError:
         print(0.0)
 
-# ==========================
-# Main
-# ==========================
+
+#main
+
 if __name__ == "__main__":
     is_positive_definite()
     is_diagonally_dominant()
