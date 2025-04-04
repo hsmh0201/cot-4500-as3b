@@ -49,8 +49,16 @@ det = np.prod(np.diag(U))
 print("{0:.14f}".format(np.nextafter(det, 0)))  
 
 #output L and U 
-print(L.tolist())
-print(U.tolist())
+def format_matrix(matrix):
+    formatted = "["
+    for i, row in enumerate(matrix):
+        formatted += "[" + " ".join(f"{v:.1f}".rstrip('0').rstrip('.') + '.' if '.' in f"{v:.1f}" else f"{v:.1f}" for v in row)
+        formatted += "]" if i == len(matrix) - 1 else "] "
+    formatted += "]"
+    return formatted
+
+print(format_matrix(L))
+print(format_matrix(U))
 
 #Q3: diagonal dominance check 
 A = np.array([
