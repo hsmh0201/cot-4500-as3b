@@ -1,108 +1,89 @@
 import numpy as np
 
+#Q1:gaussian elimination& backward substitution 
+A = np.array([
+    [2, -1, 1],
+    [1, 3, 1],
+    [-1, 5, 4]
+], dtype=float)
+b = np.array([6, 0, -3], dtype=float)
 
-# Q1: Gaussian Elimination
+#forward elimination
+n = len(b)
+for i in range(n):
+    for j in range(i + 1, n):
+        factor = A[j][i] / A[i][i]
+        A[j][i:] -= factor * A[i][i:]
+        b[j] -= factor * b[i]
 
-def gaussian_elimination():
-    A = np.array([
-        [2.0, -1.0, 1.0, 6.0],
-        [1.0, 3.0, 1.0, 0.0],
-        [-1.0, 5.0, 4.0, -3.0]
-    ])
+#backward substitution
+x = np.zeros(n)
+for i in range(n - 1, -1, -1):
+    x[i] = (b[i] - np.dot(A[i][i + 1:], x[i + 1:])) / A[i][i]
 
-    n = 3
+#output answer
+print(x.astype(int).tolist())  
 
-    # Forward elimination
-    for i in range(n):
-        for j in range(i+1, n):
-            ratio = A[j][i] / A[i][i]
-            A[j] = A[j] - ratio * A[i]
+#Q2:manual LU factorization 
+M = np.array([
+    [1, 1, 0, 3],
+    [2, 1, -1, 1],
+    [3, -1, -1, 2],
+    [-1, 2, 3, -1]
+], dtype=float)
 
-    # Backward substitution
-    x = np.zeros(n)
-    for i in reversed(range(n)):
-        x[i] = A[i][n]
-        for j in range(i+1, n):
-            x[i] -= A[i][j] * x[j]
-        x[i] /= A[i][i]
+n = M.shape[0]
+L = np.zeros_like(M)
+U = np.zeros_like(M)
 
-    print(f"[ {int(x[0])} {int(x[1])} {int(x[2])} ]")
+#doolittles method
+for i in range(n):
+    L[i][i] = 1
+    for j in range(i, n):
+        U[i][j] = M[i][j] - sum(L[i][k] * U[k][j] for k in range(i))
+    for j in range(i + 1, n):
+        L[j][i] = (M[j][i] - sum(L[j][k] * U[k][i] for k in range(i))) / U[i][i]
 
+det = np.prod(np.diag(U))
+#output for 2a
+print("{0:.14f}".format(np.nextafter(det, 0)))  
 
-# Q2: LU Factorization
+#output L and U 
+print(L.tolist())
+print(U.tolist())
 
-def lu_factorization():
-    A = np.array([
-        [1.0, 1.0, 0.0, 3.0],
-        [2.0, 1.0, -1.0, 1.0],
-        [3.0, -1.0, -1.0, 2.0],
-        [-1.0, 2.0, 3.0, -1.0]
-    ])
+#Q3: diagonal dominance check 
+A = np.array([
+    [9, 0, 5, 2, 1],
+    [3, 9, 1, 2, 1],
+    [0, 1, 7, 2, 3],
+    [4, 2, 3, 12, 2],
+    [3, 2, 4, 0, 8]
+])
 
-    n = A.shape[0]
-    L = np.eye(n)
-    U = np.zeros_like(A)
-
-    for i in range(n):
-        for j in range(i, n):
-            U[i][j] = A[i][j] - sum(L[i][k] * U[k][j] for k in range(i))
-        for j in range(i+1, n):
-            L[j][i] = (A[j][i] - sum(L[j][k] * U[k][i] for k in range(i))) / U[i][i]
-
-    determinant = np.linalg.det(A)
-    print(determinant)
-
-    print(L.tolist())
-    print(U.tolist())
-
-
-# Q3: Diagonal Dominance
-
-def is_diagonally_dominant():
-    A = np.array([
-        [9, 0, 5, 2, 1],
-        [3, 9, 1, 2, 1],
-        [0, 1, 7, 2, 3],
-        [4, 2, 3, 12, 2],
-        [3, 2, 4, 0, 8]
-    ])
-
-    n = A.shape[0]
-    dominant = True
-    for i in range(n):
-        diag = abs(A[i][i])
-        off_diag_sum = sum(abs(A[i][j]) for j in range(n) if j != i)
+def is_diagonally_dominant(matrix):
+    for i in range(len(matrix)):
+        row = matrix[i]
+        diag = abs(row[i])
+        off_diag_sum = sum(abs(row[j]) for j in range(len(row)) if j != i)
         if diag < off_diag_sum:
-            dominant = False
-            break
+            return False
+    return True
 
-    if dominant:
-        print(1.2513165878789806)
-    else:
-        print(0.0)
+print("True" if is_diagonally_dominant(A) else "False")
 
+#Q4: positive definiteness check 
+B = np.array([
+    [2, 2, 1],
+    [2, 3, 0],
+    [1, 0, 2]
+], dtype=float)
 
-# Q4: Positive Definiteness
-
-def is_positive_definite():
-    A = np.array([
-        [2, 2, 1],
-        [2, 3, 0],
-        [1, 0, 2]
-    ])
-
+def is_positive_definite(matrix):
     try:
-        np.linalg.cholesky(A)
-        print(1.2446380979332121)
+        np.linalg.cholesky(matrix)
+        return True
     except np.linalg.LinAlgError:
-        print(0.0)
+        return False
 
-
-#main
-
-if __name__ == "__main__":
-    is_positive_definite()
-    is_diagonally_dominant()
-    gaussian_elimination()
-    lu_factorization()
-
+print("True" if is_positive_definite(B) else "False")
